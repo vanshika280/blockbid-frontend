@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlockBid IPL | Decentralized Cricket Auction</title>
+    <meta name="description" content="BlockBid IPL – A decentralized IPL-style cricket player auction powered by Ethereum blockchain." />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- ── HEADER ─────────────────────── -->
+    <header class="topbar">
+      <div class="logo-container">
+        <img src="./logo.png" alt="BlockBid Logo" class="logo" />
+        <div>
+          <h1>BlockBid IPL</h1>
+          <p class="tagline">Decentralized Cricket Auction</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="wallet-pill" id="walletPill">
+          <span class="wallet-dot" id="walletDot"></span>
+          <span id="walletPillText">Not Connected</span>
+        </div>
+        <button id="themeToggle" class="secondary-btn icon-btn">🌙 Dark Mode</button>
+      </div>
+    </header>
+
+    <!-- ── LIVE STATS BANNER ──────────── -->
+    <div class="stats-banner">
+      <div class="stat-item">
+        <span class="stat-value" id="statTotal">0</span>
+        <span class="stat-label">Total Players</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value" id="statSold">0</span>
+        <span class="stat-label">Sold</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value status-active-text" id="statActive">0</span>
+        <span class="stat-label">Live Now</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value" id="statUpcoming">0</span>
+        <span class="stat-label">Upcoming</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value accent-text" id="statEth">0 ETH</span>
+        <span class="stat-label">Total Bids</span>
+      </div>
+    </div>
+
+    <!-- ── LIVE TICKER ───────────────── -->
+    <div class="ticker-bar">
+      <span class="ticker-label">🔴 LIVE</span>
+      <div class="ticker-track">
+        <div class="ticker-content" id="tickerContent">Awaiting auction activity...</div>
+      </div>
+    </div>
+
+    <main class="container">
+      <!-- ── WALLET + REGISTRATION ────── -->
+      <div class="grid-2">
+        <section class="card">
+          <h2>💳 Wallet</h2>
+          <div class="row">
+            <button id="connectWalletBtn">Connect MetaMask</button>
+            <span id="networkBadge" class="badge badge-network">Network: -</span>
+          </div>
+          <div class="wallet-info-grid">
+            <div class="wallet-info-item">
+              <span class="wallet-info-label">Address</span>
+              <span id="walletAddress" class="wallet-info-value monospace">Not connected</span>
+            </div>
+            <div class="wallet-info-item">
+              <span class="wallet-info-label">Balance</span>
+              <span id="walletBalance" class="wallet-info-value accent-text">0 ETH</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>🏏 Team Registration</h2>
+          <div class="row">
+            <input type="text" id="teamNameInput" placeholder="Enter your team name" />
+            <button id="registerTeamBtn">Register Team</button>
+          </div>
+          <p id="teamStatus" class="muted mt-2">No team registered yet.</p>
+          <div class="info-box mt-2">
+            <span>💡 One wallet = one team. Register to start bidding on players.</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- ── DASHBOARD + LEADERBOARD ─── -->
+      <section class="grid-2">
+        <section class="card">
+          <h2>📊 Team Dashboard</h2>
+          <div class="dashboard-stats">
+            <div class="dashboard-stat">
+              <span class="ds-label">Team Name</span>
+              <span class="ds-value" id="dashboardTeamName">-</span>
+            </div>
+            <div class="dashboard-stat">
+              <span class="ds-label">Total Spent</span>
+              <span class="ds-value accent-text" id="dashboardSpent">0 ETH</span>
+            </div>
+            <div class="dashboard-stat">
+              <span class="ds-label">Players Bought</span>
+              <span class="ds-value" id="dashboardPlayerCount">0</span>
+            </div>
+          </div>
+          <p class="muted mt-2" style="font-size:0.85rem;">Owned Players:</p>
+          <ul id="dashboardPlayers" class="dashboard-players-list"></ul>
+        </section>
+
+        <section class="card">
+          <h2>🏆 Leaderboard</h2>
+          <div class="chart-container" style="position: relative; height: 230px; width: 100%; margin-bottom: 16px;">
+            <canvas id="leaderboardChart"></canvas>
+          </div>
+          <ul id="leaderboardList"></ul>
+        </section>
+      </section>
+
+      <!-- ── AUCTION FILTER TABS ────── -->
+      <section class="card">
+        <div class="auction-header">
+          <h2>⚡ Player Auctions</h2>
+          <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all">All</button>
+            <button class="tab-btn" data-filter="upcoming">Upcoming</button>
+            <button class="tab-btn" data-filter="active">🔴 Live</button>
+            <button class="tab-btn" data-filter="sold">Sold</button>
+          </div>
+          <input type="text" id="searchInput" placeholder="🔍 Search player..." class="search" />
+        </div>
+        <div id="playerGrid" class="player-grid"></div>
+      </section>
+
+      <!-- ── ACTIVITY FEED + HISTORY ── -->
+      <section class="grid-2">
+        <section class="card">
+          <h2>📜 Transaction History</h2>
+          <ul id="txHistory"></ul>
+        </section>
+        <section class="card">
+          <h2>ℹ️ How It Works</h2>
+          <ol class="how-it-works">
+            <li>Connect your MetaMask wallet to Hardhat network (Chain ID: 31337)</li>
+            <li>Register your team with a unique name</li>
+            <li>Wait for the owner to start a player auction</li>
+            <li>Place bids — highest bid wins when timer ends</li>
+            <li>Outbid refunds go back to previous bidder automatically</li>
+            <li>Track your team spend and players in the dashboard</li>
+          </ol>
+        </section>
+      </section>
+    </main>
+
+    <!-- ── WIN MODAL ─────────────────── -->
+    <div id="winModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-confetti" id="modalConfetti"></div>
+        <div class="modal-trophy">🏆</div>
+        <h2 class="modal-title">You Won!</h2>
+        <img id="modalPlayerImg" src="" alt="" class="modal-player-img" />
+        <h3 id="modalPlayerName" class="modal-player-name"></h3>
+        <p id="modalWinAmount" class="modal-win-amount"></p>
+        <button id="modalClose" class="modal-close-btn">Continue Bidding</button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="./vendor/chart.umd.min.js"></script>
+    <script src="./vendor/ethers.umd.min.js"></script>
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
