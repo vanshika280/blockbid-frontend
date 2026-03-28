@@ -1,5 +1,5 @@
 // Replace this after deployment.
-const contractAddress = "0xE0A2014abc746761ac3E485903e6C12c2E32A6ee";
+const CONTRACT_ADDRESS = "0xE0A2014abc746761ac3E485903e6C12c2E32A6ee";
 
 // Keep this ABI in sync with BlockBidIPL.sol.
 const CONTRACT_ABI = [
